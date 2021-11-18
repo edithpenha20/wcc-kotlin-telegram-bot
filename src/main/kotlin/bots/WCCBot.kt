@@ -11,15 +11,22 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 
 class WCCBot : TelegramLongPollingBot() {
 
+    val welcome = """
+        Olá\, amigo\! Bem\-vindo ao meu JavaBot
+        Digite o comando abaixo para dar início
+        \/star \- para começar
+        \/info \- para mais informações
+    """.trimMargin()
+
     override fun getBotUsername(): String {
         //return bot username
         // If bot username is @HelloKotlinBot, it must return
-        return "HelloKotlinBot"
+        return "JavaBot"
     }
 
     override fun getBotToken(): String {
         // Return bot token from BotFather
-        return "[TOKEN-TELEGRAM]"
+        return "1957004094:AAHopzJN_Msee3-d3qW0oAx_8Nrxwj4Gzf4"
     }
 
     override fun onUpdateReceived(update: Update?) {
@@ -29,27 +36,28 @@ class WCCBot : TelegramLongPollingBot() {
         val messageCommand = update?.message?.text
 
         try {
-            if(messageCommand=="/start") {
-                val sendDocument = SendDocument().apply {
-                    this.chatId = chatId
-                    this.caption = EmojiParser.parseToUnicode("Oláaa $nameSender :smile:")
-                    this.document = InputFile().setMedia("https://media.giphy.com/media/SKGo6OYe24EBG/giphy.gif")
-                    this.parseMode = "MarkdownV2"
-                }
 
-                execute(sendDocument)
-            } else {
-                val sendDocument = SendMessage().apply {
-                    this.chatId = chatId
-                    this.text = EmojiParser.parseToUnicode("num funfou :(")
-                    this.parseMode = "MarkdownV2"
-                }
-
-                execute(sendDocument)
+            val sendDocument = SendDocument().apply {
+                this.chatId = chatId
+                this.caption = getMessage(messageCommand)
+                this.document = InputFile().setMedia("https://media.giphy.com/media/SKGo6OYe24EBG/giphy.gif")
+                this.parseMode = "MarkdownV2"
             }
+
+            execute(sendDocument)
         } catch (e: TelegramApiException) {
             e.printStackTrace()
         }
+    }
+
+    private fun getMessage(command: String?) = when(command) {
+        "/info" -> "Não há informações"
+        "/start" -> welcome
+        else -> EmojiParser.parseToUnicode("tente novamente :cry:")
+    }
+
+    private fun sendMusicUpdate(update: Update?) {
+
     }
 }
 
